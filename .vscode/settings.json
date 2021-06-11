@@ -15,8 +15,8 @@
     "**/.git": true,
     "**/.gitignore": true,
     "**/.lintstagedrc.json": true,
-    "**/.prettierignore": true,
-    "**/.prettierrc.json": true,
+    "**/.prettierignore": false,
+    "**/.prettierrc.json": false,
     "**/yarn-error.log": true,
     "**/yarn.lock": true
   }

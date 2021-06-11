@@ -6,8 +6,8 @@
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2",
     "test": "echo \"No test specified\" && exit 0",
-    "prettier": "prettier --check **/*.ts",
-    "prettier:fix": "prettier --write **/*.ts"
+    "prettier": "prettier --check src/**/*.js",
+    "prettier:fix": "prettier --write **/*.js"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,7 @@
     "compute-cosine-similarity": "^1.0.0",
     "fast-csv": "^2.4.1",
     "mathjs": "^3.18.0",
-    "natural": "^0.5.4"
+    "natural": "^0.5.4",
+    "prettier": "^2.3.1"
   }
 }
