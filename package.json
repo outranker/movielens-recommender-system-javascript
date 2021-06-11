@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "prettier": "prettier --check **/*.ts",
+    "prettier:fix": "prettier --write **/*.ts"
   },
   "keywords": [],
   "author": "",
