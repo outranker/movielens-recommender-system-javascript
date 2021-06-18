@@ -22,6 +22,7 @@
     "compute-cosine-similarity": "^1.0.0",
     "fast-csv": "^2.4.1",
     "mathjs": "^3.18.0",
+    "mongodb": "^3.6.9",
     "natural": "^0.5.4",
     "prettier": "^2.3.1"
   },
