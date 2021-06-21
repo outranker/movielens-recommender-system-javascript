@@ -9,9 +9,13 @@ function prepareMovies(moviesMetaData, moviesKeywords) {
   // E.g. get overview property into same shape as studio property
   console.log('(1) Zipping Movies');
   let MOVIES_IN_LIST = zip(moviesMetaData, moviesKeywords);
-  MOVIES_IN_LIST = withTokenizedAndStemmed(MOVIES_IN_LIST, 'overview');
-  MOVIES_IN_LIST = fromArrayToMap(MOVIES_IN_LIST, 'overview');
 
+  console.log('before 143', MOVIES_IN_LIST[143]);
+  MOVIES_IN_LIST = withTokenizedAndStemmed(MOVIES_IN_LIST, 'overview');
+
+  console.log('withTokenizedAndStemmed::::::: 143', MOVIES_IN_LIST[143]);
+  MOVIES_IN_LIST = fromArrayToMap(MOVIES_IN_LIST, 'overview');
+  console.log('fromArrayToMap::::::::143', MOVIES_IN_LIST[143]);
   // Keep a map of movies for later reference
   let MOVIES_BY_ID = MOVIES_IN_LIST.reduce(byId, {});
 
@@ -81,7 +85,7 @@ export function scaleFeatures(X, means, ranges) {
       return (feature - means[key]) / ranges[key];
     });
   });
-};
+}
 
 export function synthesizeFeatures(X, means, featureIndexes) {
   return X.map((row) => {
@@ -142,8 +146,8 @@ export function getCoefficients(X) {
     };
   }, initC);
 
-  const means = helperC.sums.map(value => value / M);
-  const ranges =  helperC.mins.map((value, key) => helperC.maxs[key] - value);
+  const means = helperC.sums.map((value) => value / M);
+  const ranges = helperC.mins.map((value, key) => helperC.maxs[key] - value);
 
   return { ranges, means };
 }
@@ -170,11 +174,11 @@ export function toFeaturizedMovies(dictionaries) {
     featureVector.push(...toFeaturizedFromDictionary(movie, dictionaries.keywordsDictionary, 'keywords'));
 
     return featureVector;
-  }
+  };
 }
 
 export function toFeaturizedRelease(movie) {
-  return movie.release ? Number((movie.release).slice(0, 4)) : 'undefined';
+  return movie.release ? Number(movie.release.slice(0, 4)) : 'undefined';
 }
 
 export function toFeaturizedAdult(movie) {
@@ -191,8 +195,8 @@ export function toFeaturizedLanguage(movie) {
 
 export function toFeaturizedFromDictionary(movie, dictionary, property) {
   // Fallback, because not all movies have associated keywords
-  const propertyIds = (movie[property] || []).map(value => value.id);
-  const isIncluded = (value) => propertyIds.includes(value.id) ? 1 : 0;
+  const propertyIds = (movie[property] || []).map((value) => value.id);
+  const isIncluded = (value) => (propertyIds.includes(value.id) ? 1 : 0);
   return dictionary.map(isIncluded);
 }
 
@@ -247,8 +251,8 @@ export function withTokenizedAndStemmed(array, property) {
 
 export function filterByThreshold(dictionary, threshold) {
   return Object.keys(dictionary)
-    .filter(key => dictionary[key].count > threshold)
-    .map(key => dictionary[key]);
+    .filter((key) => dictionary[key].count > threshold)
+    .map((key) => dictionary[key]);
 }
 
 export function toDictionary(array, property) {
@@ -266,7 +270,7 @@ export function toDictionary(array, property) {
         dictionary[innerValue.id] = {
           ...dictionary[innerValue.id],
           count: dictionary[innerValue.id].count + 1,
-        }
+        };
       }
     });
   });
@@ -299,7 +303,7 @@ export function toDictionary(array, property) {
 // }
 
 export function zip(movies, keywords) {
-  return Object.keys(movies).map(mId => ({
+  return Object.keys(movies).map((mId) => ({
     ...movies[mId],
     ...keywords[mId],
   }));
