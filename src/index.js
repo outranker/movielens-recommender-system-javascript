@@ -75,14 +75,25 @@ function fromRatingsFile(row) {
 
 console.log('Unloading data from files ... \n');
 let db1;
-const devdb = 'string';
+const devdb =
+  'mongodb+srv://generalUser:g5jE6R8JfkcAs4er5TC@cluster0.yxdzl.mongodb.net/contentBasedFiltering?retryWrites=true&w=majority';
 mongodb.connect(devdb, { useNewUrlParser: true, useUnifiedTopology: true }, (err, cl) => {
   db1 = cl.db();
-  db1
+  let likes;
+  const firstData = db1
     .collection('likes')
     .find({})
     .toArray((err, data1) => {
-      console.log('sucess', data1);
+      // console.log('sucess', data1);
+      likes = data1;
+    });
+  console.log('data1', likes);
+  const data2 = db1
+    .collection('vibes')
+    .find({})
+    .toArray((err, data1) => {
+      // console.log('sucess', data1);
+      return data1;
     });
 
   Promise.all([moviesMetaDataPromise, moviesKeywordsPromise, ratingsPromise]).then(init);
