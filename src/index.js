@@ -12,6 +12,10 @@ import predictWithLinearRegression from './strategies/linearRegression';
 import predictWithContentBased from './strategies/contentBased';
 import { predictWithCfUserBased, predictWithCfItemBased } from './strategies/collaborativeFiltering';
 import { getMovieIndexByTitle } from './strategies/common';
+import { connectDb, getDb } from '../conn';
+
+var db; // store db object in this object
+// connectDb(() => (db = getDb('user')));
 
 let MOVIES_META_DATA = {};
 let MOVIES_KEYWORDS = {};
