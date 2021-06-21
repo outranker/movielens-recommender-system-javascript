@@ -85,92 +85,92 @@ mongodb.connect(devdb, { useNewUrlParser: true, useUnifiedTopology: true }, (err
       console.log('sucess', data1);
     });
 
-Promise.all([moviesMetaDataPromise, moviesKeywordsPromise, ratingsPromise]).then(init);
-function init([moviesMetaData, moviesKeywords, ratings]) {
-  /* ------------ */
-  //  Preparation //
-  /* -------------*/
+  Promise.all([moviesMetaDataPromise, moviesKeywordsPromise, ratingsPromise]).then(init);
+  function init([moviesMetaData, moviesKeywords, ratings]) {
+    /* ------------ */
+    //  Preparation //
+    /* -------------*/
 
-  const { MOVIES_BY_ID, MOVIES_IN_LIST, X } = prepareMovies(moviesMetaData, moviesKeywords);
+    const { MOVIES_BY_ID, MOVIES_IN_LIST, X } = prepareMovies(moviesMetaData, moviesKeywords);
 
-  let ME_USER_RATINGS = [
-    //  addUserRating(ME_USER_ID, 'Terminator 3: Rise of the Machines', '5.0', MOVIES_IN_LIST),
-    //  addUserRating(ME_USER_ID, 'Jarhead', '4.0', MOVIES_IN_LIST),
-    addUserRating(ME_USER_ID, 'Back to the Future Part II', '5.0', MOVIES_IN_LIST),
-    addUserRating(ME_USER_ID, 'Jurassic Park', '4.0', MOVIES_IN_LIST),
-    // addUserRating(ME_USER_ID, 'Reservoir Dogs', '3.0', MOVIES_IN_LIST),
-    // addUserRating(ME_USER_ID, 'Men in Black II', '3.0', MOVIES_IN_LIST),
-    // addUserRating(ME_USER_ID, 'Bad Boys II', '5.0', MOVIES_IN_LIST),
-    // addUserRating(ME_USER_ID, 'Sissi', '1.0', MOVIES_IN_LIST),
-    // addUserRating(ME_USER_ID, 'Titanic', '1.0', MOVIES_IN_LIST),
-  ];
+    let ME_USER_RATINGS = [
+      //  addUserRating(ME_USER_ID, 'Terminator 3: Rise of the Machines', '5.0', MOVIES_IN_LIST),
+      //  addUserRating(ME_USER_ID, 'Jarhead', '4.0', MOVIES_IN_LIST),
+      addUserRating(ME_USER_ID, 'Back to the Future Part II', '5.0', MOVIES_IN_LIST),
+      addUserRating(ME_USER_ID, 'Jurassic Park', '4.0', MOVIES_IN_LIST),
+      // addUserRating(ME_USER_ID, 'Reservoir Dogs', '3.0', MOVIES_IN_LIST),
+      // addUserRating(ME_USER_ID, 'Men in Black II', '3.0', MOVIES_IN_LIST),
+      // addUserRating(ME_USER_ID, 'Bad Boys II', '5.0', MOVIES_IN_LIST),
+      // addUserRating(ME_USER_ID, 'Sissi', '1.0', MOVIES_IN_LIST),
+      // addUserRating(ME_USER_ID, 'Titanic', '1.0', MOVIES_IN_LIST),
+    ];
 
-  const { ratingsGroupedByUser, ratingsGroupedByMovie } = prepareRatings([...ME_USER_RATINGS, ...ratings]);
+    const { ratingsGroupedByUser, ratingsGroupedByMovie } = prepareRatings([...ME_USER_RATINGS, ...ratings]);
 
-  /* ----------------------------- */
-  //  Linear Regression Prediction //
-  //        Gradient Descent       //
-  /* ----------------------------- */
+    /* ----------------------------- */
+    //  Linear Regression Prediction //
+    //        Gradient Descent       //
+    /* ----------------------------- */
 
-  console.log('\n');
-  console.log('(A) Linear Regression Prediction ... \n');
+    console.log('\n');
+    console.log('(A) Linear Regression Prediction ... \n');
 
-  console.log('(1) Training \n');
-  const meUserRatings = ratingsGroupedByUser[ME_USER_ID];
-  const linearRegressionBasedRecommendation = predictWithLinearRegression(X, MOVIES_IN_LIST, meUserRatings);
+    console.log('(1) Training \n');
+    const meUserRatings = ratingsGroupedByUser[ME_USER_ID];
+    const linearRegressionBasedRecommendation = predictWithLinearRegression(X, MOVIES_IN_LIST, meUserRatings);
 
-  console.log('(2) Prediction \n');
-  console.log(sliceAndDice(linearRegressionBasedRecommendation, MOVIES_BY_ID, 10, true));
+    console.log('(2) Prediction \n');
+    console.log(sliceAndDice(linearRegressionBasedRecommendation, MOVIES_BY_ID, 10, true));
 
-  /* ------------------------- */
-  //  Content-Based Prediction //
-  //  Cosine Similarity Matrix //
-  /* ------------------------- */
+    /* ------------------------- */
+    //  Content-Based Prediction //
+    //  Cosine Similarity Matrix //
+    /* ------------------------- */
 
-  console.log('\n');
-  console.log('(B) Content-Based Prediction ... \n');
+    console.log('\n');
+    console.log('(B) Content-Based Prediction ... \n');
 
-  console.log('(1) Computing Cosine Similarity \n');
-  const title = 'Batman Begins';
-  const contentBasedRecommendation = predictWithContentBased(X, MOVIES_IN_LIST, title);
+    console.log('(1) Computing Cosine Similarity \n');
+    const title = 'Batman Begins';
+    const contentBasedRecommendation = predictWithContentBased(X, MOVIES_IN_LIST, title);
 
-  console.log(`(2) Prediction based on "${title}" \n`);
-  console.log(sliceAndDice(contentBasedRecommendation, MOVIES_BY_ID, 10, true));
+    console.log(`(2) Prediction based on "${title}" \n`);
+    console.log(sliceAndDice(contentBasedRecommendation, MOVIES_BY_ID, 10, true));
 
-  /* ----------------------------------- */
-  //  Collaborative-Filtering Prediction //
-  //             User-Based              //
-  /* ----------------------------------- */
+    /* ----------------------------------- */
+    //  Collaborative-Filtering Prediction //
+    //             User-Based              //
+    /* ----------------------------------- */
 
-  console.log('\n');
-  console.log('(C) Collaborative-Filtering (User-Based) Prediction ... \n');
+    console.log('\n');
+    console.log('(C) Collaborative-Filtering (User-Based) Prediction ... \n');
 
-  console.log('(1) Computing User-Based Cosine Similarity \n');
+    console.log('(1) Computing User-Based Cosine Similarity \n');
 
-  const cfUserBasedRecommendation = predictWithCfUserBased(ratingsGroupedByUser, ratingsGroupedByMovie, ME_USER_ID);
+    const cfUserBasedRecommendation = predictWithCfUserBased(ratingsGroupedByUser, ratingsGroupedByMovie, ME_USER_ID);
 
-  console.log('(2) Prediction \n');
-  console.log(sliceAndDice(cfUserBasedRecommendation, MOVIES_BY_ID, 10, true));
+    console.log('(2) Prediction \n');
+    console.log(sliceAndDice(cfUserBasedRecommendation, MOVIES_BY_ID, 10, true));
 
-  /* ----------------------------------- */
-  //  Collaborative-Filtering Prediction //
-  //             Item-Based              //
-  /* ----------------------------------- */
+    /* ----------------------------------- */
+    //  Collaborative-Filtering Prediction //
+    //             Item-Based              //
+    /* ----------------------------------- */
 
-  console.log('\n');
-  console.log('(C) Collaborative-Filtering (Item-Based) Prediction ... \n');
+    console.log('\n');
+    console.log('(C) Collaborative-Filtering (Item-Based) Prediction ... \n');
 
-  console.log('(1) Computing Item-Based Cosine Similarity \n');
+    console.log('(1) Computing Item-Based Cosine Similarity \n');
 
-  const cfItemBasedRecommendation = predictWithCfItemBased(ratingsGroupedByUser, ratingsGroupedByMovie, ME_USER_ID);
+    const cfItemBasedRecommendation = predictWithCfItemBased(ratingsGroupedByUser, ratingsGroupedByMovie, ME_USER_ID);
 
-  console.log('(2) Prediction \n');
-  console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_BY_ID, 10, true));
+    console.log('(2) Prediction \n');
+    console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_BY_ID, 10, true));
 
-  console.log('\n');
-  console.log('End ...');
-}
-// });
+    console.log('\n');
+    console.log('End ...');
+  }
+});
 
 // Utility
 
