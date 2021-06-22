@@ -1,5 +1,5 @@
 import natural from 'natural';
-
+import { writeFile } from 'fs';
 natural.PorterStemmer.attach();
 
 function prepareMovies(moviesMetaData, moviesKeywords) {
@@ -10,17 +10,16 @@ function prepareMovies(moviesMetaData, moviesKeywords) {
   console.log('(1) Zipping Movies');
   let MOVIES_IN_LIST = zip(moviesMetaData, moviesKeywords);
 
-  console.log('before 143', MOVIES_IN_LIST[143]);
   MOVIES_IN_LIST = withTokenizedAndStemmed(MOVIES_IN_LIST, 'overview');
 
-  console.log('withTokenizedAndStemmed::::::: 143', MOVIES_IN_LIST[143]);
   MOVIES_IN_LIST = fromArrayToMap(MOVIES_IN_LIST, 'overview');
-  console.log('fromArrayToMap::::::::143', MOVIES_IN_LIST[143]);
+
   // Keep a map of movies for later reference
   let MOVIES_BY_ID = MOVIES_IN_LIST.reduce(byId, {});
 
   console.log('(2) Creating Dictionaries');
   // Preparing dictionaries for feature extraction
+
   let DICTIONARIES = prepareDictionaries(MOVIES_IN_LIST);
 
   // Feature Extraction:
@@ -28,7 +27,9 @@ function prepareMovies(moviesMetaData, moviesKeywords) {
   // Map dictionaries to partial feature vectors
   console.log('(3) Extracting Features');
   let X = MOVIES_IN_LIST.map(toFeaturizedMovies(DICTIONARIES));
-
+  writeFile('Xfile.txt', JSON.stringify(X), (e) => {
+    if (e) console.log('error', e);
+  });
   // Extract a couple of valuable coefficients
   // Can be used in a later stage (e.g. feature scaling)
   console.log('(4) Calculating Coefficients');
@@ -62,6 +63,7 @@ export function prepareDictionaries(movies) {
   let studioDictionary = toDictionary(movies, 'studio');
   let keywordsDictionary = toDictionary(movies, 'keywords');
   let overviewDictionary = toDictionary(movies, 'overview');
+  console.log('overviewDictionary', overviewDictionary['arma']);
 
   // Customize the threshold to your own needs
   // Depending on threshold you get a different size of a feature vector for a movie
@@ -155,7 +157,6 @@ export function getCoefficients(X) {
 export function toFeaturizedMovies(dictionaries) {
   return function toFeatureVector(movie) {
     const featureVector = [];
-
     featureVector.push(toFeaturizedNumber(movie, 'budget'));
     featureVector.push(toFeaturizedNumber(movie, 'popularity'));
     featureVector.push(toFeaturizedNumber(movie, 'revenue'));
@@ -173,6 +174,7 @@ export function toFeaturizedMovies(dictionaries) {
     featureVector.push(...toFeaturizedFromDictionary(movie, dictionaries.studioDictionary, 'studio'));
     featureVector.push(...toFeaturizedFromDictionary(movie, dictionaries.keywordsDictionary, 'keywords'));
 
+    // console.log('cscsdcsdcsdcs????????????', featureVector);
     return featureVector;
   };
 }
