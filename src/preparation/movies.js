@@ -27,14 +27,19 @@ function prepareMovies(moviesMetaData, moviesKeywords) {
   // Map dictionaries to partial feature vectors
   console.log('(3) Extracting Features');
   let X = MOVIES_IN_LIST.map(toFeaturizedMovies(DICTIONARIES));
-  writeFile('Xfile.txt', JSON.stringify(X), (e) => {
-    if (e) console.log('error', e);
-  });
+  // writeFile('Xfile.txt', JSON.stringify(X), (e) => {
+  //   if (e) console.log('error', e);
+  // });
   // Extract a couple of valuable coefficients
   // Can be used in a later stage (e.g. feature scaling)
   console.log('(4) Calculating Coefficients');
   let { means, ranges } = getCoefficients(X);
-
+  // writeFile('means.txt', JSON.stringify(means), (e) => {
+  //   if (e) console.log('error', e);
+  // });
+  // writeFile('ranges.txt', JSON.stringify(ranges), (e) => {
+  //   if (e) console.log('error', e);
+  // });
   // Synthesize Features:
   // Missing features (such as budget, release, revenue)
   // can be synthesized with the mean of the features
